@@ -9,7 +9,7 @@ public class BoardManager : MonoBehaviour {
 
     public Range wallRange = new Range(5, 9);
     public Range foodRange = new Range(1, 5);
-
+    public Range enemyRange = new Range(1, 5);
 
     public GameObject exit;
     public GameObject[] floorPrefabs;
@@ -60,21 +60,18 @@ public class BoardManager : MonoBehaviour {
 
         List<Vector3> openPositions = new List<Vector3>(this.GetFloorPositions());
 
-        Repeat.Times(this.wallRange.GetRandom(), () => {
+        Repeat.Times(this.wallRange.PickRandom(), () => {
             Instantiate(this.innerWallPrefabs.PickRandom(), openPositions.RandomlyGrab(), Quaternion.identity);
         });
 
-        foreach(Vector3 position in openPositions.RandomlyGrabUpTo(this.foodRange.GetRandom())) {
-            Instantiate(this.foodPrefabs.PickRandom(), position, Quaternion.identity);
-        }
+        Repeat.Times(this.foodRange.PickRandom(), () => {
+            Instantiate(this.foodPrefabs.PickRandom(), openPositions.RandomlyGrab(), Quaternion.identity);
+        });
 
-        foreach(Vector3 position in openPositions.RandomlyGrabUpTo(5)) {
-            Instantiate(this.enemyPrefabs.PickRandom(), position, Quaternion.identity);
-        }
+        Repeat.Times(this.enemyRange.PickRandom(), () => {
+            Instantiate(this.enemyPrefabs.PickRandom(), openPositions.RandomlyGrab(), Quaternion.identity);
+        });
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
 }
