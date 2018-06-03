@@ -5,6 +5,37 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardManager : MonoBehaviour {
+
+    public class BoardInserter {
+        private Transform holder;
+
+        public BoardInserter(Transform holder) {
+            this.holder = holder;
+        }
+
+        public BoardInserter() : this(new GameObject("Board").transform) {
+            // Already initialized!
+        }
+
+        public GameObject Insert(GameObject prefab, Vector3 position) {
+            GameObject newObject = Instantiate<GameObject>(prefab, position, Quaternion.identity);
+            newObject.transform.SetParent(this.holder);
+            return newObject;
+        }
+
+        public GameObject Insert(GameObject[] prefabs, Vector3 position) {
+            return this.Insert(prefabs.PickRandom(), position);
+        }
+
+        public IList<GameObject> Insert(GameObject[] prefabs, IEnumerable<Vector3> positions) {
+            List<GameObject> retval = new List<GameObject>();
+            foreach(Vector3 p in positions) {
+                retval.Insert(0, this.Insert(prefabs, p));
+            }
+            return retval;
+        }
+    }
+
     delegate void Inserter(Range range, GameObject[] prefabs);
 
     public int rows = 8;
@@ -53,13 +84,10 @@ public class BoardManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        foreach(Vector3 position in this.GetOuterWallPositions()) {
-            Instantiate(this.outerWallPrefabs.PickRandom(), position, Quaternion.identity);
-        }
+        BoardInserter boardInserter = new BoardInserter(this.transform);
 
-        foreach(Vector3 position in this.GetFloorPositions()) {
-            Instantiate(this.floorPrefabs.PickRandom(), position, Quaternion.identity);
-        }
+        boardInserter.Insert(this.outerWallPrefabs, this.GetOuterWallPositions());
+        boardInserter.Insert(this.floorPrefabs, this.GetFloorPositions());
 
         List<Vector3> openPositions = new List<Vector3>(this.GetFloorPositions());
 
