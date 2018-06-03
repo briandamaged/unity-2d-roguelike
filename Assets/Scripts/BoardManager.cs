@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using System.Linq;
-
 public class BoardManager : MonoBehaviour {
 
     public int rows = 8;
@@ -62,9 +60,9 @@ public class BoardManager : MonoBehaviour {
 
         List<Vector3> openPositions = new List<Vector3>(this.GetFloorPositions());
 
-        foreach(Vector3 position in openPositions.RandomlyGrabUpTo(this.wallRange.GetRandom())) {
-            Instantiate(this.innerWallPrefabs.PickRandom(), position, Quaternion.identity);
-        }
+        Repeat.Times(this.wallRange.GetRandom(), () => {
+            Instantiate(this.innerWallPrefabs.PickRandom(), openPositions.RandomlyGrab(), Quaternion.identity);
+        });
 
         foreach(Vector3 position in openPositions.RandomlyGrabUpTo(this.foodRange.GetRandom())) {
             Instantiate(this.foodPrefabs.PickRandom(), position, Quaternion.identity);
