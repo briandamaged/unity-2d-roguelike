@@ -30,6 +30,9 @@ public class BoardManager : MonoBehaviour {
         return Rectangles.GetSolidPositions(0, 0, this.cols - 1, this.rows - 1);
     }
 
+    IEnumerable<Vector3> GetVacantPositions() {
+        return Rectangles.GetSolidPositions(1, 1, this.cols - 2, this.rows - 2);
+    }
 
 	void Start () {
         BoardInserter boardInserter = new BoardInserter(this.transform);
@@ -37,7 +40,7 @@ public class BoardManager : MonoBehaviour {
         boardInserter.Insert(this.outerWallPrefabs, this.GetOuterWallPositions());
         boardInserter.Insert(this.floorPrefabs, this.GetFloorPositions());
 
-        VacanciesInserter vacancies = new VacanciesInserter(boardInserter, this.GetFloorPositions());
+        VacanciesInserter vacancies = new VacanciesInserter(boardInserter, this.GetVacantPositions());
 
         vacancies.Insert(this.innerWallPrefabs, this.wallRange);
         vacancies.Insert(this.foodPrefabs, this.foodRange);
