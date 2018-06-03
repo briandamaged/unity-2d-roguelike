@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 using Random = UnityEngine.Random;
 
-static class ArrayHelpers {
+static class ArrayExtensions {
 
     public static T PickRandom<T>(this T[] array) {
         if(array.Length <= 0) {
