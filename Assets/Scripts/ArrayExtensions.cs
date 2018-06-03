@@ -1,7 +1,5 @@
 ﻿
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
 using Random = UnityEngine.Random;
 
@@ -13,19 +11,6 @@ static class ArrayExtensions {
         }
         int index = Random.Range(0, array.Length);
         return array[index];
-    }
-
-
-    public static T RandomlyGrab<T>(this IList<T> list) {
-        if(list.Count == 0) {
-            throw new InvalidOperationException("Cannot RandomlyPick from an empty IList");
-        }
-
-        int index = Random.Range(0, list.Count);
-        T retval = list[index];
-        list.RemoveAt(index);
-
-        return retval;
     }
 
 }
