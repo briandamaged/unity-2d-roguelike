@@ -5,66 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardManager : MonoBehaviour {
-
-    public class BoardInserter {
-        private Transform holder;
-
-        public BoardInserter(Transform holder) {
-            this.holder = holder;
-        }
-
-        public BoardInserter() : this(new GameObject("Board").transform) {
-            // Already initialized!
-        }
-
-        public GameObject Insert(GameObject prefab, Vector3 position) {
-            GameObject newObject = Instantiate<GameObject>(prefab, position, Quaternion.identity);
-            newObject.transform.SetParent(this.holder);
-            return newObject;
-        }
-
-        public GameObject Insert(GameObject[] prefabs, Vector3 position) {
-            return this.Insert(prefabs.PickRandom(), position);
-        }
-
-        public IList<GameObject> Insert(GameObject[] prefabs, IEnumerable<Vector3> positions) {
-            List<GameObject> retval = new List<GameObject>();
-            foreach(Vector3 p in positions) {
-                retval.Insert(0, this.Insert(prefabs, p));
-            }
-            return retval;
-        }
-
-        public VacanciesInserter CreateVacanciesInserter(IList<Vector3> vacancies) {
-            return new VacanciesInserter(this, vacancies);
-        }
-    }
-
-
-    public class VacanciesInserter {
-        private BoardInserter boardInserter;
-        private IList<Vector3> vacancies;
-
-        public VacanciesInserter(BoardInserter boardInserter, IList<Vector3> vacancies) {
-            this.boardInserter = boardInserter;
-            this.vacancies = vacancies;
-        }
-
-        public VacanciesInserter(BoardInserter boardInserter, IEnumerable<Vector3> vacancies) : this(boardInserter, new List<Vector3>(vacancies)) {
-            // Already initialized
-        }
-
-        public IList<GameObject> Insert(GameObject[] prefabs, int count) {
-            return this.boardInserter.Insert(prefabs, Repeat.Times(count, this.vacancies.GrabRandom));
-        }
-
-        public IList<GameObject> Insert(GameObject[] prefabs, Range range) {
-            return this.Insert(prefabs, range.PickRandom());
-        }
-    }
-
-    delegate void Inserter(Range range, GameObject[] prefabs);
-
+    
     public int rows = 8;
     public int cols = 8;
 
