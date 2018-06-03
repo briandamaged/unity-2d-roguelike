@@ -7,6 +7,25 @@ using UnityEngine;
 public class BoardManager : MonoBehaviour {
 
     public class BoardInserter {
+        public class VacanciesInserter {
+            private BoardInserter boardInserter;
+            private IList<Vector3> vacancies;
+
+            public VacanciesInserter(BoardInserter boardInserter, IList<Vector3> vacancies) {
+                this.boardInserter = boardInserter;
+                this.vacancies = vacancies;
+            }
+
+            public VacanciesInserter(BoardInserter boardInserter, IEnumerable<Vector3> vacancies) : this(boardInserter, new List<Vector3>(vacancies)) {
+                // Already initialized
+            }
+
+            public IList<GameObject> Insert(GameObject[] prefabs, int count) {
+                this.boardInserter.Insert(prefabs, Repeat.Times(count, this.vacancies.GrabRandom));
+            }
+
+        }
+
         private Transform holder;
 
         public BoardInserter(Transform holder) {
@@ -33,6 +52,10 @@ public class BoardManager : MonoBehaviour {
                 retval.Insert(0, this.Insert(prefabs, p));
             }
             return retval;
+        }
+
+        public VacanciesInserter CreateVacanciesInserter(IList<Vector3> vacancies) {
+            return new VacanciesInserter(this, vacancies);
         }
     }
 
