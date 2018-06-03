@@ -61,15 +61,15 @@ public class BoardManager : MonoBehaviour {
         List<Vector3> openPositions = new List<Vector3>(this.GetFloorPositions());
 
         Repeat.Times(this.wallRange.PickRandom(), () => {
-            Instantiate(this.innerWallPrefabs.PickRandom(), openPositions.RandomlyGrab(), Quaternion.identity);
+            Instantiate(this.innerWallPrefabs.PickRandom(), openPositions.GrabRandom(), Quaternion.identity);
         });
 
         Repeat.Times(this.foodRange.PickRandom(), () => {
-            Instantiate(this.foodPrefabs.PickRandom(), openPositions.RandomlyGrab(), Quaternion.identity);
+            Instantiate(this.foodPrefabs.PickRandom(), openPositions.GrabRandom(), Quaternion.identity);
         });
 
         Repeat.Times(this.enemyRange.PickRandom(), () => {
-            Instantiate(this.enemyPrefabs.PickRandom(), openPositions.RandomlyGrab(), Quaternion.identity);
+            Instantiate(this.enemyPrefabs.PickRandom(), openPositions.GrabRandom(), Quaternion.identity);
         });
 	}
 	
