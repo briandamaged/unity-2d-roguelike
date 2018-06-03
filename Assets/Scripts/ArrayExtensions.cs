@@ -28,15 +28,4 @@ static class ArrayExtensions {
         return retval;
     }
 
-    public static IEnumerable<T> RandomlyGrabUpTo<T>(this IList<T> list, int count) {
-        for (int i = 0; i < count; ++i) {
-            if(list.Count == 0) {
-                yield break;
-            }
-
-            yield return list.RandomlyGrab();
-        }
-    }
-
-
 }
