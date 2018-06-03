@@ -31,7 +31,7 @@ public class BoardManager : MonoBehaviour {
     }
 
     IEnumerable<Vector3> GetOuterWallPositions() {
-        return this.GetHollowRectanglePositions(0, 0, this.cols, this.rows);
+        return this.GetHollowRectanglePositions(-1, -1, this.cols, this.rows);
     }
 
     IEnumerable<Vector3> GetHollowRectanglePositions(int x1, int y1, int x2, int y2) {
@@ -47,7 +47,7 @@ public class BoardManager : MonoBehaviour {
     }
 
     IEnumerable<Vector3> GetFloorPositions() {
-        return GetSolidRectanglePositions(1, 1, this.cols - 1, this.rows - 1);
+        return GetSolidRectanglePositions(0, 0, this.cols - 1, this.rows - 1);
     }
 
 	// Use this for initialization
