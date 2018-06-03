@@ -14,7 +14,7 @@ public class BoardInserter {
     }
 
     public GameObject Insert(GameObject prefab, Vector3 position) {
-        GameObject newObject = GameObject.Instantiate<GameObject>(prefab, position, Quaternion.identity);
+        GameObject newObject = Object.Instantiate(prefab, position, Quaternion.identity);
         newObject.transform.SetParent(this.holder);
         return newObject;
     }
