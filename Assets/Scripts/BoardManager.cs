@@ -13,7 +13,7 @@ public class BoardManager : MonoBehaviour {
     public Range foodRange = new Range(1, 5);
     public Range enemyRange = new Range(1, 5);
 
-    public GameObject exit;
+    public GameObject exitPrefab;
     public GameObject[] floorPrefabs;
     public GameObject[] innerWallPrefabs;
     public GameObject[] outerWallPrefabs;
@@ -30,7 +30,7 @@ public class BoardManager : MonoBehaviour {
         return Rectangles.GetSolidPositions(0, 0, this.cols - 1, this.rows - 1);
     }
 
-    IEnumerable<Vector3> GetVacantPositions() {
+    IEnumerable<Vector3> GetOccupiablePositions() {
         return Rectangles.GetSolidPositions(1, 1, this.cols - 2, this.rows - 2);
     }
 
@@ -40,7 +40,9 @@ public class BoardManager : MonoBehaviour {
         boardInserter.Insert(this.outerWallPrefabs, this.GetOuterWallPositions());
         boardInserter.Insert(this.floorPrefabs, this.GetFloorPositions());
 
-        VacanciesInserter vacancies = new VacanciesInserter(boardInserter, this.GetVacantPositions());
+        boardInserter.Insert(this.exitPrefab, new Vector3(this.cols - 1, this.rows - 1));
+
+        VacanciesInserter vacancies = new VacanciesInserter(boardInserter, this.GetOccupiablePositions());
 
         vacancies.Insert(this.innerWallPrefabs, this.wallRange);
         vacancies.Insert(this.foodPrefabs, this.foodRange);
