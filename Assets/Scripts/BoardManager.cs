@@ -81,32 +81,12 @@ public class BoardManager : MonoBehaviour {
     public GameObject[] enemyPrefabs;
 
 
-    IEnumerable<Vector3> GetSolidRectanglePositions(int x1, int y1, int x2, int y2) {
-        for (int x = x1; x <= x2; ++x) {
-            for (int y = y1; y <= y2; ++y) {
-                yield return new Vector3(x, y, 0f);
-            }
-        }
-    }
-
     IEnumerable<Vector3> GetOuterWallPositions() {
-        return this.GetHollowRectanglePositions(-1, -1, this.cols, this.rows);
-    }
-
-    IEnumerable<Vector3> GetHollowRectanglePositions(int x1, int y1, int x2, int y2) {
-        for (int x = x1; x <= x2; ++x) {
-            yield return new Vector3(x, y1, 0f);
-            yield return new Vector3(x, y2, 0f);
-        }
-
-        for (int y = y1 + 1; y < y2; ++y) {
-            yield return new Vector3(x1, y, 0f);
-            yield return new Vector3(x2, y, 0f);
-        }
+        return Rectangles.GetHollowPositions(-1, -1, this.cols, this.rows);
     }
 
     IEnumerable<Vector3> GetFloorPositions() {
-        return GetSolidRectanglePositions(0, 0, this.cols - 1, this.rows - 1);
+        return Rectangles.GetSolidPositions(0, 0, this.cols - 1, this.rows - 1);
     }
 
 
