@@ -7,25 +7,6 @@ using UnityEngine;
 public class BoardManager : MonoBehaviour {
 
     public class BoardInserter {
-        public class VacanciesInserter {
-            private BoardInserter boardInserter;
-            private IList<Vector3> vacancies;
-
-            public VacanciesInserter(BoardInserter boardInserter, IList<Vector3> vacancies) {
-                this.boardInserter = boardInserter;
-                this.vacancies = vacancies;
-            }
-
-            public VacanciesInserter(BoardInserter boardInserter, IEnumerable<Vector3> vacancies) : this(boardInserter, new List<Vector3>(vacancies)) {
-                // Already initialized
-            }
-
-            public IList<GameObject> Insert(GameObject[] prefabs, int count) {
-                this.boardInserter.Insert(prefabs, Repeat.Times(count, this.vacancies.GrabRandom));
-            }
-
-        }
-
         private Transform holder;
 
         public BoardInserter(Transform holder) {
@@ -56,6 +37,29 @@ public class BoardManager : MonoBehaviour {
 
         public VacanciesInserter CreateVacanciesInserter(IList<Vector3> vacancies) {
             return new VacanciesInserter(this, vacancies);
+        }
+    }
+
+
+    public class VacanciesInserter {
+        private BoardInserter boardInserter;
+        private IList<Vector3> vacancies;
+
+        public VacanciesInserter(BoardInserter boardInserter, IList<Vector3> vacancies) {
+            this.boardInserter = boardInserter;
+            this.vacancies = vacancies;
+        }
+
+        public VacanciesInserter(BoardInserter boardInserter, IEnumerable<Vector3> vacancies) : this(boardInserter, new List<Vector3>(vacancies)) {
+            // Already initialized
+        }
+
+        public IList<GameObject> Insert(GameObject[] prefabs, int count) {
+            return this.boardInserter.Insert(prefabs, Repeat.Times(count, this.vacancies.GrabRandom));
+        }
+
+        public IList<GameObject> Insert(GameObject[] prefabs, Range range) {
+            return this.Insert(prefabs, range.PickRandom());
         }
     }
 
@@ -105,24 +109,18 @@ public class BoardManager : MonoBehaviour {
         return GetSolidRectanglePositions(0, 0, this.cols - 1, this.rows - 1);
     }
 
-	// Use this for initialization
+
 	void Start () {
         BoardInserter boardInserter = new BoardInserter(this.transform);
 
         boardInserter.Insert(this.outerWallPrefabs, this.GetOuterWallPositions());
         boardInserter.Insert(this.floorPrefabs, this.GetFloorPositions());
 
-        List<Vector3> openPositions = new List<Vector3>(this.GetFloorPositions());
+        VacanciesInserter vacancies = new VacanciesInserter(boardInserter, this.GetFloorPositions());
 
-        Inserter Insert = (Range range, GameObject[] prefabs) => {
-            Repeat.Times(range.PickRandom(), () => {
-                Instantiate(prefabs.PickRandom(), openPositions.GrabRandom(), Quaternion.identity);
-            });
-        };
-
-        Insert(this.wallRange, this.innerWallPrefabs);
-        Insert(this.foodRange, this.foodPrefabs);
-        Insert(this.enemyRange, this.enemyPrefabs);
+        vacancies.Insert(this.innerWallPrefabs, this.wallRange);
+        vacancies.Insert(this.foodPrefabs, this.foodRange);
+        vacancies.Insert(this.enemyPrefabs, this.enemyRange);
 	}
 	
 
