@@ -14,7 +14,7 @@ public class Range {
         this.max = max;
     }
 
-    int GetRandom() {
+    public int GetRandom() {
         return Random.Range(this.min, this.max);
     }
 

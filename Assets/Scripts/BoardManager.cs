@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using System.Linq;
+
 public class BoardManager : MonoBehaviour {
 
     public int rows = 8;
@@ -16,10 +18,11 @@ public class BoardManager : MonoBehaviour {
     public GameObject[] innerWallPrefabs;
     public GameObject[] outerWallPrefabs;
 
+    public GameObject[] foodPrefabs;
     public GameObject[] enemyPrefabs;
 
 
-    IEnumerable<Vector3> SolidRectangle(int x1, int y1, int x2, int y2) {
+    IEnumerable<Vector3> GetSolidRectanglePositions(int x1, int y1, int x2, int y2) {
         for (int x = x1; x <= x2; ++x) {
             for (int y = y1; y <= y2; ++y) {
                 yield return new Vector3(x, y, 0f);
@@ -27,7 +30,11 @@ public class BoardManager : MonoBehaviour {
         }
     }
 
-    IEnumerable<Vector3> HollowRectangle(int x1, int y1, int x2, int y2) {
+    IEnumerable<Vector3> GetOuterWallPositions() {
+        return this.GetHollowRectanglePositions(0, 0, this.cols, this.rows);
+    }
+
+    IEnumerable<Vector3> GetHollowRectanglePositions(int x1, int y1, int x2, int y2) {
         for (int x = x1; x <= x2; ++x) {
             yield return new Vector3(x, y1, 0f);
             yield return new Vector3(x, y2, 0f);
@@ -39,14 +46,32 @@ public class BoardManager : MonoBehaviour {
         }
     }
 
+    IEnumerable<Vector3> GetFloorPositions() {
+        return GetSolidRectanglePositions(1, 1, this.cols - 1, this.rows - 1);
+    }
+
 	// Use this for initialization
 	void Start () {
-        foreach(Vector3 position in this.HollowRectangle(0, 0, this.cols, this.rows)) {
+        foreach(Vector3 position in this.GetOuterWallPositions()) {
             Instantiate(this.outerWallPrefabs.PickRandom(), position, Quaternion.identity);
         }
 
-        foreach(Vector3 position in this.SolidRectangle(1, 1, this.cols - 1, this.rows - 1)) {
+        foreach(Vector3 position in this.GetFloorPositions()) {
             Instantiate(this.floorPrefabs.PickRandom(), position, Quaternion.identity);
+        }
+
+        List<Vector3> openPositions = new List<Vector3>(this.GetFloorPositions());
+
+        foreach(Vector3 position in openPositions.RandomlyGrabUpTo(this.wallRange.GetRandom())) {
+            Instantiate(this.innerWallPrefabs.PickRandom(), position, Quaternion.identity);
+        }
+
+        foreach(Vector3 position in openPositions.RandomlyGrabUpTo(this.foodRange.GetRandom())) {
+            Instantiate(this.foodPrefabs.PickRandom(), position, Quaternion.identity);
+        }
+
+        foreach(Vector3 position in openPositions.RandomlyGrabUpTo(5)) {
+            Instantiate(this.enemyPrefabs.PickRandom(), position, Quaternion.identity);
         }
 	}
 	
