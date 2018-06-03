@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardManager : MonoBehaviour {
+    delegate void Inserter(Range range, GameObject[] prefabs);
 
     public int rows = 8;
     public int cols = 8;
@@ -60,17 +63,15 @@ public class BoardManager : MonoBehaviour {
 
         List<Vector3> openPositions = new List<Vector3>(this.GetFloorPositions());
 
-        Repeat.Times(this.wallRange.PickRandom(), () => {
-            Instantiate(this.innerWallPrefabs.PickRandom(), openPositions.GrabRandom(), Quaternion.identity);
-        });
+        Inserter Insert = (Range range, GameObject[] prefabs) => {
+            Repeat.Times(range.PickRandom(), () => {
+                Instantiate(prefabs.PickRandom(), openPositions.GrabRandom(), Quaternion.identity);
+            });
+        };
 
-        Repeat.Times(this.foodRange.PickRandom(), () => {
-            Instantiate(this.foodPrefabs.PickRandom(), openPositions.GrabRandom(), Quaternion.identity);
-        });
-
-        Repeat.Times(this.enemyRange.PickRandom(), () => {
-            Instantiate(this.enemyPrefabs.PickRandom(), openPositions.GrabRandom(), Quaternion.identity);
-        });
+        Insert(this.wallRange, this.innerWallPrefabs);
+        Insert(this.foodRange, this.foodPrefabs);
+        Insert(this.enemyRange, this.enemyPrefabs);
 	}
 	
 
