@@ -13,48 +13,19 @@ public class PlayerController : MonoBehaviour {
         this.rb = this.GetComponent<Rigidbody2D>();
         this.moving = false;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-
         if(!this.moving) {
-            int dx = 0;
-            int dy = 0;
+            int dx = (int)Input.GetAxis("Horizontal");
+            int dy = (int)Input.GetAxis("Vertical");
 
-            bool tryMove = false;
-
-            if (Input.GetKeyDown(KeyCode.A)) {
-                --dx;
-                tryMove = true;
-            }
-
-            if (Input.GetKeyDown(KeyCode.D)) {
-                ++dx;
-                tryMove = true;
-            }
-
-            if (Input.GetKeyDown(KeyCode.S)) {
-                --dy;
-                tryMove = true;
-            }
-
-            if (Input.GetKeyDown(KeyCode.W)) {
-                ++dy;
-                tryMove = true;
-            }
-
-            if(tryMove) {
-
+            if(dx != 0 || dy != 0) {
                 Vector2 dest = this.rb.position + new Vector2(dx, dy);
                 StartCoroutine(Move.Linear(this.rb, dest, 0.1f, () => { this.moving = false; }));
 
                 this.moving = true;
-
             }
-
-
         }
-
-
 	}
 }
